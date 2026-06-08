@@ -1,0 +1,36 @@
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
+import logger from "./config/logger.js";
+import type { HttpError } from "http-errors";
+import songRouter from "./routes/songRoutes.js";
+
+const app = express();
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Welcome to song-rec");
+});
+
+app.use("/song", songRouter);
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
+  logger.error(err.message);
+  const statusCode = err.statusCode || err.status || 500;
+
+  res.status(statusCode).json({
+    errors: [
+      {
+        type: err.name,
+        msg: err.message,
+        path: "",
+        location: "",
+      },
+    ],
+  });
+});
+
+export default app;
