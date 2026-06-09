@@ -4,3 +4,5 @@ export interface Song {
   spotifyUrl: string;
   imageUrl: string;
 }
+
+//make a interface
